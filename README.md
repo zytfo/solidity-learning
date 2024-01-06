@@ -22,3 +22,7 @@
 4. Add into `foundry.toml`: `remappings = ["@chainlink/contracts/=lib/chainlink-brownie-contracts/contracts/",]`
 5. `forge remappings > remappings.txt` - add remappings for libs
 6. `forge test -vv` - run tests with console.log
+7. !!!`forge test -vvv --fork-url $SEPOLIA_RPC_URL` - run tests on forked sepolia
+8. `forge coverage --fork-url $SEPOLIA_RPC_URL` - show coverage on forked sepolia
+9. `chisel` - run solidity line-by-line executor
+10. `forge snapshot` - get gas spend for every function
