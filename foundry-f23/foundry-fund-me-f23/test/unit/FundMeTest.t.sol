@@ -3,14 +3,15 @@
 pragma solidity ^0.8.18;
 
 import {Test, console} from "forge-std/Test.sol";
-import {FundMe} from "../src/FundMe.sol";
-import {DeployFundMe} from "../script/DeployFundMe.s.sol";
+import {FundMe} from "../../src/FundMe.sol";
+import {DeployFundMe} from "../../script/DeployFundMe.s.sol";
 
 contract FundMeTest is Test {
     FundMe fundMe;
     address USER = makeAddr("user");
     uint256 constant SEND_VALUE = 0.1 ether;
     uint256 constant STARTING_BALANCE = 10 ether;
+    uint256 constant GAS_PRICE = 1;
 
     function setUp() external {
         // fundMe = new FundMe(0x694AA1769357215DE4FAC081bf1f309aDC325306);
@@ -76,8 +77,13 @@ contract FundMeTest is Test {
         uint256 startingFundMeBalance = address(fundMe).balance;
 
         // act
-        vm.prank(fundMe.getOwner());
+        uint256 gasStart = gasleft(); // 1000
+        vm.txGasPrice(GAS_PRICE);
+        vm.prank(fundMe.getOwner()); // c: 200
         fundMe.withdraw();
+        uint256 gasEnd = gasleft(); // 800
+        uint256 gasUsed = (gasStart - gasEnd) * tx.gasprice;
+        console.log(gasUsed);
 
         // assert
         uint256 endingOwnerBalance = fundMe.getOwner().balance;
@@ -106,6 +112,33 @@ contract FundMeTest is Test {
         // act
         vm.startPrank(fundMe.getOwner());
         fundMe.withdraw();
+        vm.stopPrank();
+
+        // assert
+        assert(address(fundMe).balance == 0);
+        assert(
+            startingFundMeBalance + startingOwnerBalance ==
+                fundMe.getOwner().balance
+        );
+    }
+
+    function testWithdrawFromMultipleFundersCheaper() public funded {
+        uint160 numberOfFunders = 10;
+        uint160 startingFunderIndex = 1;
+        for (uint160 i = startingFunderIndex; i < numberOfFunders; i++) {
+            // vm.prank
+            // vm.deal
+            // -> hoax
+            hoax(address(i), SEND_VALUE);
+            fundMe.fund{value: SEND_VALUE}();
+        }
+
+        uint256 startingOwnerBalance = fundMe.getOwner().balance;
+        uint256 startingFundMeBalance = address(fundMe).balance;
+
+        // act
+        vm.startPrank(fundMe.getOwner());
+        fundMe.cheaperWithdraw();
         vm.stopPrank();
 
         // assert

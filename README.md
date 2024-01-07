@@ -16,6 +16,8 @@
 
 ### foundry-fund-me-f23
 
+[https://www.evm.codes/](EMV OP CODES GAS)
+
 1. `forge init` - init a new project
 2. `forge test` - run test
 3. `forge install smartcontractkit/chainlink-brownie-contracts --no-commit` - install chainlink libs
@@ -26,3 +28,6 @@
 8. `forge coverage --fork-url $SEPOLIA_RPC_URL` - show coverage on forked sepolia
 9. `chisel` - run solidity line-by-line executor
 10. `forge snapshot` - get gas spend for every function
+11. `forge test --mt testWithdrawWithASingleFunder -vv` - run a particular test
+12. `forge inspect FundMe storageLayout` - get storage layout
+13. `forge install cyfrin/foundry-devops --no-commit` - install devops
