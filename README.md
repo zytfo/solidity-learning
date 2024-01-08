@@ -31,3 +31,5 @@
 11. `forge test --mt testWithdrawWithASingleFunder -vv` - run a particular test
 12. `forge inspect FundMe storageLayout` - get storage layout
 13. `forge install cyfrin/foundry-devops --no-commit` - install devops
+14. `cast sig "fund()"` - find hex function selector
+15. `cast --calldata-decode "fund()" 0xb60d4288` - decode hex data
